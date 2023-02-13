@@ -1,16 +1,26 @@
 import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base';
+import { useNavigation } from '@react-navigation/native';
 
 import LogoSvg from '@assets/logo.svg'
 import BackgroundImg from '@assets/background.png';
+
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 
 export function SingUp() {
+
+  const navigation = useNavigation();
+
+  function handleGoBack() {
+    navigation.goBack();
+  }
+
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} >
-      <VStack flex={1} bg="gray.700" px={9} >
+      <VStack flex={1} px={9} >
         <Image
           source={BackgroundImg}
+          defaultSource={BackgroundImg}
           alt="Pessoas treinando"
           resizeMode='contain'
           position="absolute"
@@ -50,6 +60,7 @@ export function SingUp() {
             title='Voltar para o login'
             variant="outline"
             mt={24}
+            onPress={handleGoBack}
           />
 
       </VStack>
