@@ -8,14 +8,25 @@ import BackgroundImg from '@assets/background.png';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 
+type FormDataProps = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirm: string;
+}
+
 export function SingUp() {
 
-  const { control } = useForm();
+  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>();
 
   const navigation = useNavigation();
 
   function handleGoBack() {
     navigation.goBack();
+  }
+
+  function handleSingUp({ name, email, password, password_confirm }: FormDataProps) {
+    console.log(name, email, password, password_confirm);
   }
 
   return (
@@ -44,11 +55,15 @@ export function SingUp() {
           <Controller
             control={control}
             name='name'
+            rules={{
+              required: 'Informe o nome'
+            }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder='Nome'
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.name?.message}
               />
             )}
           />
@@ -56,6 +71,13 @@ export function SingUp() {
           <Controller
             control={control}
             name='email'
+            rules={{
+              required: 'Informe o e-mail',
+              pattern: {
+                value:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'E-mail inválido'
+              }
+            }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder='E-mail'
@@ -63,6 +85,7 @@ export function SingUp() {
                 autoCapitalize='none'
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.email?.message}
               />
             )}
           />
@@ -70,6 +93,9 @@ export function SingUp() {
           <Controller
             control={control}
             name='password'
+            rules={{
+              required: 'Informe a senha'
+            }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder='Senha'
@@ -84,6 +110,9 @@ export function SingUp() {
           <Controller
             control={control}
             name='password_confirm'
+            rules={{
+              required: 'Informe a senha novamente'
+            }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder='Confirme a senha'
@@ -91,11 +120,16 @@ export function SingUp() {
                 autoCapitalize='none'
                 onChangeText={onChange}
                 value={value}
+                onSubmitEditing={handleSubmit(handleSingUp)}
+                returnKeyType='send'
               />
             )}
           />
 
-          <Button title='Criar e acessar' />
+          <Button
+            title='Criar e acessar'
+            onPress={handleSubmit(handleSingUp)}
+          />
         </Center>
 
         <Button
