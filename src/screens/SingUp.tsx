@@ -4,11 +4,15 @@ import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import axios from 'axios';
+import { api } from '@services/api';
+
 import LogoSvg from '@assets/logo.svg'
 import BackgroundImg from '@assets/background.png';
 
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
+import { Alert } from 'react-native';
 
 type FormDataProps = {
   name: string;
@@ -37,16 +41,14 @@ export function SingUp() {
   }
 
   async function handleSingUp({ name, email, password }: FormDataProps) {
-    const response = await fetch('http://10.0.0.5:3333/users', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, email, password })
-    })
-      const data = await response.json();
-      console.log(data);
+    try {
+      const response = await api.post('/users', { name, email, password });
+      console.log(response.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        Alert.alert(error.response?.data.message);
+      }
+    }
   }
 
   return (
@@ -74,7 +76,7 @@ export function SingUp() {
 
           <Controller
             control={control}
-            name='name'            
+            name='name'
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder='Nome'
@@ -87,7 +89,7 @@ export function SingUp() {
 
           <Controller
             control={control}
-            name='email'            
+            name='email'
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder='E-mail'
