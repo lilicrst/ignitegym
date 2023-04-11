@@ -36,8 +36,17 @@ export function SingUp() {
     navigation.goBack();
   }
 
-  function handleSingUp({ name, email, password, password_confirm }: FormDataProps) {
-    console.log({name, email, password, password_confirm});
+  async function handleSingUp({ name, email, password }: FormDataProps) {
+    const response = await fetch('http://10.0.0.5:3333/users', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, email, password })
+    })
+      const data = await response.json();
+      console.log(data);
   }
 
   return (
